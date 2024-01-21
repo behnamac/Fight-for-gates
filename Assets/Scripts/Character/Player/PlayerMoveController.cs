@@ -7,14 +7,14 @@ namespace Character.Player
 {
     public class PlayerMoveController : MonoBehaviour
     {
-        #region Serialize Field
+        #region Serialize Fields
 
         [SerializeField] private float speedHorizontal;
         [SerializeField] private float minHorizontal;
         [SerializeField] private float maxHorizontal;
 
         #endregion
-        
+
         #region PRIVATE FIELDS
 
         private Animator _anim;
@@ -30,23 +30,28 @@ namespace Character.Player
 
         private void Awake()
         {
+            // Subscribe to level events
             LevelManager.OnLevelStart += OnLevelStart;
             LevelManager.OnLevelComplete += OnLevelComplete;
             LevelManager.OnLevelFail += OnLevelFail;
 
+            // Try to get the Animator component
             TryGetComponent(out _anim);
 
+            // Set initial xMove position
             _xMove = transform.position.x;
         }
 
         private void Update()
         {
-            if(_canMove)
+            // Update horizontal movement if allowed
+            if (_canMove)
                 HorizontalMove();
         }
 
         private void OnDestroy()
         {
+            // Unsubscribe from level events
             LevelManager.OnLevelStart -= OnLevelStart;
             LevelManager.OnLevelComplete -= OnLevelComplete;
             LevelManager.OnLevelFail -= OnLevelFail;
@@ -58,8 +63,11 @@ namespace Character.Player
 
         private void HorizontalMove()
         {
+            // Calculate new xMove position based on swipe input
             _xMove -= GetHorizontalMove() * speedHorizontal * Time.deltaTime;
             _xMove = Mathf.Clamp(_xMove, minHorizontal, maxHorizontal);
+
+            // Update the object's position
             var thisTransform = transform;
             var thisPosition = thisTransform.position;
             thisPosition.x = _xMove;
@@ -94,18 +102,21 @@ namespace Character.Player
 
         private void OnLevelStart(Level level)
         {
+            // Enable movement and start running animation
             _canMove = true;
             _anim.SetBool(Run, true);
         }
 
         private void OnLevelComplete(Level level)
         {
+            // Disable movement and stop running animation on level complete
             _canMove = false;
             _anim.SetBool(Run, false);
         }
 
         private void OnLevelFail(Level level)
         {
+            // Disable movement and stop running animation on level fail
             _canMove = false;
             _anim.SetBool(Run, false);
         }

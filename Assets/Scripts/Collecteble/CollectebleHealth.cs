@@ -9,7 +9,7 @@ namespace Collecteble
 {
     public class CollectebleHealth : MonoBehaviour, ICollectebleCollision
     {
-        [SerializeField] private float heelValue = 10;
+        [SerializeField] private float healValue = 10;
         private Collider _collider;
 
         private void Awake()
@@ -28,7 +28,7 @@ namespace Collecteble
             _collider.enabled = false;
             transform.DOMove(character.gaint.transform.position + Vector3.up * 8, 1).OnComplete(() =>
             {
-                character.gaint.Heel(heelValue);
+                character.gaint.Heal(healValue);
                 Destroy(gameObject);
             });
         }
